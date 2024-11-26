@@ -1,0 +1,189 @@
+---
+title: 'Simulación social'
+output: html_document
+date: "2024-11-19"
+---
+
+Tarea 1: 
+
+```{r}
+# Definir las estrategias
+strategies <- c('Rock', 'Paper', 'Scissors', 'Lizard', 'Spock')
+
+# Definir las reglas del juego en un "data frame" para simular los pagos
+payoff <- data.frame(
+  Player1 = c('Rock', 'Paper', 'Scissors', 'Lizard', 'Spock'),
+  Rock = c(0, 1, 1, 1, 0),
+  Paper = c(1, 0, 1, 0, 1),
+  Scissors = c(1, 0, 0, 1, 0),
+  Lizard = c(0, 1, 1, 0, 1),
+  Spock = c(1, 0, 0, 1, 0),
+  stringsAsFactors = FALSE
+)
+
+# Función para obtener el resultado del juego
+get_result <- function(player1_choice, player2_choice) {
+  if (player1_choice == player2_choice) {
+    return(c(0, 0))  # Empate
+  }
+  row <- which(payoff$Player1 == player1_choice)
+  col <- which(names(payoff) == player2_choice)
+  player1_score <- payoff[row, col]
+  player2_score <- ifelse(player1_score == 1, 0, 1)
+  return(c(player1_score, player2_score))
+}
+
+# Crear jugadores con nombre, puntuación y estrategia vacía
+players <- list(
+  list(name = 'John', score = 0, strategy = NULL),
+  list(name = 'Mary', score = 0, strategy = NULL)
+)
+
+# Función para que un jugador elija una estrategia aleatoriamente
+choose_strategy <- function() {
+  return(sample(strategies, 1))
+}
+
+# Tomar decisiones de los jugadores
+players[[1]]$strategy <- choose_strategy()
+players[[2]]$strategy <- choose_strategy()
+
+# Mostrar las decisiones tomadas por los jugadores
+cat("John's strategy:", players[[1]]$strategy, "\n")
+cat("Mary's strategy:", players[[2]]$strategy, "\n")
+
+# Obtener el resultado de la partida
+result <- get_result(players[[1]]$strategy, players[[2]]$strategy)
+cat("Result: John gets", result[1], "points, Mary gets", result[2], "points.\n")
+
+# Actualizar las puntuaciones de los jugadores
+players[[1]]$score <- players[[1]]$score + result[1]
+players[[2]]$score <- players[[2]]$score + result[2]
+
+# Mostrar el estado de los jugadores después del juego
+cat("Updated scores:\n")
+cat("John's score:", players[[1]]$score, "\n")
+cat("Mary's score:", players[[2]]$score, "\n")
+
+# Crear un dataframe con los resultados sociales
+social_results <- data.frame(
+  Name = c(players[[1]]$name, players[[2]]$name),
+  Score = c(players[[1]]$score, players[[2]]$score)
+)
+
+# Mostrar los resultados
+cat("Social results:\n")
+print(social_results)
+
+# Determinar el ganador
+winner_score <- max(social_results$Score)
+winner <- social_results[social_results$Score == winner_score, "Name"]
+cat("The winner is:", winner, "\n")
+
+```
+
+
+Tarea 2: 
+
+
+```{r}
+# Definir las estrategias
+strategies <- c('Rock', 'Paper', 'Scissors', 'Lizard', 'Spock')
+
+# Definir las reglas del juego en una matriz de pagos
+payoff <- data.frame(
+  Player1 = c('Rock', 'Paper', 'Scissors', 'Lizard', 'Spock'),
+  Rock = c(0, 0, 1, 1, 0),       
+  Paper = c(1, 0, 0, 1, 1),
+  Scissors = c(0, 1, 0, 0, 1),
+  Lizard = c(0, 0, 1, 0, 1),
+  Spock = c(1, 0, 0, 1, 0),
+  stringsAsFactors = FALSE
+)
+
+# Función para obtener el resultado del juego
+get_result <- function(player1_choice, player2_choice) {
+  if (!(player1_choice %in% strategies) || !(player2_choice %in% strategies)) {
+    stop("Una o ambas elecciones no son válidas.")
+  }
+  if (player1_choice == player2_choice) {
+    return(c(0, 0)) # Empate
+  }
+  row <- which(payoff$Player1 == player1_choice)
+  col <- which(names(payoff) == player2_choice)
+  player1_score <- as.numeric(payoff[row, col])
+  player2_score <- ifelse(player1_score == 1, 0, 1)
+  return(c(player1_score, player2_score))
+}
+
+# Función para que un jugador elija una estrategia aleatoriamente
+choose_strategy <- function() {
+  return(sample(strategies, 1))
+}
+
+# Inicializar jugadores y configuraciones del juego
+num_players <- 5
+num_rounds <- 5
+players <- lapply(1:num_players, function(i) {
+  list(name = paste("Player", i), score = 0, strategy = NULL)
+})
+
+# Visualización en vivo usando ggplot2
+library(ggplot2)
+visualize_scores <- function(players, round) {
+  current_scores <- data.frame(
+    Name = sapply(players, function(p) p$name),
+    Score = sapply(players, function(p) p$score)
+  )
+  ggplot(current_scores, aes(x = reorder(Name, -Score), y = Score, fill = Name)) +
+    geom_bar(stat = "identity", show.legend = FALSE) +
+    labs(title = paste("Scores after Round", round), x = "Players", y = "Score") +
+    theme_minimal() +
+    theme(plot.title = element_text(hjust = 0.5, size = 16)) +
+    scale_fill_brewer(palette = "Set3")
+}
+
+# Simular rondas
+for (round in 1:num_rounds) {
+  cat("\nRound", round, ":\n")
+  for (i in 1:num_players) {
+    players[[i]]$strategy <- choose_strategy()
+    cat(players[[i]]$name, "chooses:", players[[i]]$strategy, "\n")
+  }
+  for (i in 1:(num_players - 1)) {
+    for (j in (i + 1):num_players) {
+      result <- tryCatch({
+        get_result(players[[i]]$strategy, players[[j]]$strategy)
+      }, error = function(e) {
+        cat("Error:", e$message, "\n")
+        return(c(0, 0))
+      })
+      cat(players[[i]]$name, "vs", players[[j]]$name, 
+          ": Result:", players[[i]]$name, "gets", result[1], "points,",
+          players[[j]]$name, "gets", result[2], "points.\n")
+      players[[i]]$score <- players[[i]]$score + result[1]
+      players[[j]]$score <- players[[j]]$score + result[2]
+    }
+  }
+  print(visualize_scores(players, round))
+  Sys.sleep(2)
+}
+
+# Mostrar resultados finales
+final_scores <- data.frame(
+  Name = sapply(players, function(p) p$name),
+  Score = sapply(players, function(p) p$score)
+)
+cat("\nFinal results:\n")
+print(final_scores)
+
+# Determinar el ganador
+winner_score <- max(final_scores$Score)
+winners <- final_scores[final_scores$Score == winner_score, "Name"]
+cat("The final winner(s) is/are:", paste(winners, collapse = ", "), "\n")
+
+```
+
+
+
+
