@@ -70,4 +70,5 @@ Este enfoque no solo automatiza la simulación del juego, sino que también inco
 
 ![image](https://github.com/user-attachments/assets/642873e2-d1dc-4ab1-a907-422817c6327a)
 
-
+### Link del trabajo: 
+https://qo-dc.github.io/Simulation_of_games/Index.html 
