@@ -36,3 +36,38 @@ Mary obtiene 0 puntos.
 ## Ganador:
 John es declarado el ganador de la partida.
 Este código sirve como base para simular partidas entre dos jugadores, permitiendo expandir o modificar las reglas según sea necesario. Además, es un excelente ejercicio para modelar sistemas de decisión y puntuación en R.
+
+## Descripción de la Tarea 2
+La Tarea 2 implementa un modelo ampliado del juego Rock, Paper, Scissors, Lizard, Spock en el que participan múltiples jugadores y se simulan varias rondas. El objetivo principal es permitir que los jugadores compitan entre sí en un formato de todos contra todos, calculando las puntuaciones acumulativas y determinando el ganador al final. Además, se utiliza una visualización dinámica con ggplot2 para mostrar los puntajes al término de cada ronda.
+
+## Características principales:
+Definición de estrategias y reglas del juego:
+
+## Las estrategias disponibles son: Rock, Paper, Scissors, Lizard, Spock.
+Se define una matriz de pagos que determina el resultado entre dos estrategias dadas.
+Configuración del juego:
+
+Se inicializan 5 jugadores, cada uno con un nombre, un puntaje inicial de 0 y una estrategia que se selecciona aleatoriamente antes de cada ronda.
+Se establecen 5 rondas de juego.
+## Simulación del juego:
+
+En cada ronda, cada jugador selecciona una estrategia aleatoria.
+Todos los jugadores compiten entre sí en formato de todos contra todos:
+Se calcula el resultado de cada enfrentamiento utilizando la matriz de pagos.
+Se actualizan los puntajes acumulativos de ambos jugadores.
+Visualización dinámica:
+
+## Al final de cada ronda, se genera un gráfico de barras que muestra los puntajes actualizados de los jugadores. La librería ggplot2 se utiliza para crear gráficos estilizados y fáciles de interpretar.
+## Resultados finales:
+
+Se muestra una tabla con los puntajes finales acumulados de todos los jugadores.
+Se determina al ganador (o ganadores en caso de empate), basándose en el puntaje más alto.
+## Ejemplo de resultados:
+En cada ronda, se registran las estrategias seleccionadas por los jugadores y los resultados de cada enfrentamiento.
+Al final de todas las rondas, se anuncia el o los ganadores. Por ejemplo, en este caso:
+Los ganadores fueron Player 3 y Player 5, quienes empataron con el puntaje más alto.
+Este enfoque no solo automatiza la simulación del juego, sino que también incorpora elementos visuales y dinámicos para facilitar el análisis de los resultados en tiempo real.
+
+![image](https://github.com/user-attachments/assets/642873e2-d1dc-4ab1-a907-422817c6327a)
+
+
